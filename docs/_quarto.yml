@@ -1,0 +1,16 @@
+project:
+  title: "CASA0025-Group"
+
+article:
+  favicon: "img/ucl.png"  # 替换为新的图标文件路径
+  navbar:
+    logo: "img/casa_logo.jpg"  # 替换为新的 logo 文件路径
+    collapse: true
+    collapse-below: lg
+    background: light
+    reader-mode: true
+    search: true
+    right:
+      - icon: github
+
+editor: visual
