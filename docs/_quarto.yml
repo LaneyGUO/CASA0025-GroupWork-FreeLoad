@@ -1,10 +1,13 @@
 project:
-  title: "CASA0025-Group"
+  type: book
 
-article:
-  favicon: "img/ucl.png"  # 替换为新的图标文件路径
+book:
+  title: "<span style='color: black;'>CASA0025-Group Application</span>" 
+  author: "Freeload group"
+  favicon: "img/ucl.png"
   navbar:
-    logo: "img/casa_logo.jpg"  # 替换为新的 logo 文件路径
+    logo: "img/casa_logo.jpg"
+    date: "2024/4/18"
     collapse: true
     collapse-below: lg
     background: light
@@ -12,5 +15,25 @@ article:
     search: true
     right:
       - icon: github
+  sidebar:
+    title: "<span style='color:black;'>CASA0025</span>" 
+    style: docked
+    reader-mode: true
+  repo-url: https://github.com/LaneyGUO/CASA0025-GroupWork-FreeLoad.git
+  repo-actions: [issue]
+  chapters:
+    - index.qmd
+
+bibliography: references.bib
+
+
+format:
+  html:
+    theme: cosmo
+    code-link: true
+    fontsize: 14pt
+  pdf:
+    documentclass: article
+    fontsize: 14pt
 
 editor: visual
