@@ -54,6 +54,8 @@ Additionally, by interviewing local coffee cultivation consultants, we collect e
 
 -   Slope：USGS/SRTMGL1_003： NASA SRTM Digital Elevation 30m
 
+# Google Earth Engine Application
+
 ## Data preprocessing
 
 First, we restrict the time range to January 2022 through January 2023. Then, we specify the use of bands B2 to B4, and ensure that the cloud coverage is limited to only 1%.
@@ -117,11 +119,7 @@ Then set the range of landform features suitable for coffee growth. Elevation: 7
 
 ![Visualization of elevation, slope and temperature (from left to right).](img/s+t+d.jpg){width="3845"}
 
-## Google Earth Engine Application
-
-Here are three different functions in the panel of out application.
-
-### Function 1 : View Area Changes
+## Function 1 : View Area Changes
 
 This section aims to understand the coffee planting situation in Ermera over the past five years.
 
@@ -261,7 +259,7 @@ Allows the user to reset previously drawn rectangles and calculation results.
     });
 ```
 
-## Function 3: Layers Visualisation
+## Function 3: Landuse Layers Visualisation
 
 This feature allows users to quickly display interested layers or remove them to explore the distribution of different land uses distribution classified by the Random Forest model.
 
@@ -287,7 +285,7 @@ This feature allows users to quickly display interested layers or remove them to
     }); 
 ```
 
-![visualisation](img/visualisation.png)
+![visualisation](img/visualisation.png){width="50%"}
 
 # Interaction Design
 
