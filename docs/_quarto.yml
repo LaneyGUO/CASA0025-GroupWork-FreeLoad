@@ -1,5 +1,6 @@
 project:
   type: book
+  output-dir: E:/CASA0025BigData/CASA0025-GroupWork-FreeLoad/docs
 
 book:
   title: "<span style='color: black;'>CASA0025-Group Application</span>" 
