@@ -81,6 +81,141 @@ var suitableImage = sentinel.updateMask(suitableMask);
 Map.addLayer(suitableImage.clip(ermera), visParams, 'Suitable areas for coffee planting');
 
 
+// // ----------------------- Step 4: User Interface ----------------------------------
+// create the main panel 
+var console = ui.Panel({
+  layout: ui.Panel.Layout.flow('vertical'),
+  style: {
+    position: 'top-right',
+    padding: '8px 15px',
+    width: '350px'
+  }
+});
+
+
+// Create main title of rightside panel
+var title = ui.Label({
+  value: 'Coffee Plantation Mapper',
+  style: {
+    fontWeight: 'bold',
+    fontSize: '18px',
+    margin: '0 0 4px 0',
+    padding: '0'
+    }
+});
+ 
+// add text labels
+var intro1= ui.Label('This tool uses multiple remote sensing image data and the machine learning model to detect and map existing coffee growing areas and recommended areas for cultivation in Ermera in Timor-Leste.', {whiteSpace: 'wrap'})
+var view_label= ui.Label('To view the suitable growing areas in different years, click \"View Area Changes\": ', {whiteSpace: 'wrap'})
+var stats_label= ui.Label('To explore the location and area of suitable planting areas in 2022, click \"Suitable Areas Statistics\": ', {whiteSpace: 'wrap'})
+var how_label= ui.Label('To view the distribution of different classification areas of Ermera in 2022, click \"View Classification Distribution\": ',{whiteSpace: 'wrap'})
+var intro2= ui.Label('Group: FreeLoad', {whiteSpace: 'wrap'})
+var intro3= ui.Label('CASA0025 2024', {whiteSpace: 'wrap'})
+
+// home button config. this will be used to return to the main panel after the user has clicked on the map and gotten ward-level statistics
+var home_button = ui.Button({
+  style:{stretch: 'horizontal'},
+  label: 'Home',
+  onClick: function(){
+    home()
+    Map.layers().reset()
+    Map.drawingTools().clear()
+  }
+})
+
+
+
+
+
+
+
+// Lower-left legend panel configuration
+
+// set position of panel
+var legend = ui.Panel({
+  style: {
+    position: 'bottom-left',
+    padding: '8px 15px'
+  }
+});
+ 
+// Create legend title
+var legendTitle = ui.Label({
+  value: 'Legend',
+  style: {
+    fontWeight: 'bold',
+    fontSize: '18px',
+    margin: '0 0 4px 0',
+    padding: '0'
+    }
+});
+
+// Creates and styles 1 row of the legend.
+var makeRow = function(color, name) {
+ 
+      // Create the label filled with the description text.
+      var description = ui.Label({
+        value: name,
+        style: {margin: '0 0 4px 6px'}
+      });
+ 
+      // return the panel
+      return ui.Panel({
+        widgets: [colorBox, description],
+        layout: ui.Panel.Layout.Flow('horizontal')
+      });
+};
+
+// set position of panel
+var legend = ui.Panel({
+  style: {
+    position: 'bottom-left',
+    padding: '8px 15px'
+  }
+});
+ 
+// Create legend title
+var legendTitle = ui.Label({
+  value: 'Legend',
+  style: {
+    fontWeight: 'bold',
+    fontSize: '18px',
+    margin: '0 0 4px 0',
+    padding: '0'
+    }
+});
+ 
+// Add the title to the panel
+legend.add(legendTitle);
+ 
+// Creates and styles 1 row of the legend.
+var makeRow = function(color, name, border) {
+ 
+      // Create the label that is actually the colored box.
+      var colorBox = ui.Label({
+        style: {
+          backgroundColor: '#' + color,
+          // Use padding to give the box height and width.
+          padding: '7px',
+          margin: '0 0 4px 0',
+          border: '3px solid #'+border
+        }
+      });
+ 
+      // Create the label filled with the description text.
+      var description = ui.Label({
+        value: name,
+        style: {margin: '0 0 4px 6px'}
+      });
+ 
+      // return the panel
+      return ui.Panel({
+        widgets: [colorBox, description],
+        layout: ui.Panel.Layout.Flow('horizontal')
+      });
+};
+ 
+
 // palette with the colors
 var palette_vis= [
   '49cc47', 
@@ -560,3 +695,25 @@ var how_works = ui.Button({
     console.add(home_button)
   }
 });
+
+// home panel config 
+var home= function(){
+  Map.setCenter(125.5, -8.82, 11) //centre at Ermera
+  Map.setOptions("Hybrid")
+  console.clear()
+  console.add(title);
+  console.add(intro1);
+  console.add(view_label);
+  console.add(view_changes);
+  console.add(stats_label);
+  console.add(district_stats);
+  console.add(how_label);
+  console.add(how_works);
+  console.add(intro2);
+  console.add(intro3);
+}
+
+Map.add(console);
+Map.add(legend);
+
+home()
