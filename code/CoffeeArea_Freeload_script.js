@@ -21,6 +21,64 @@ var visParams = {
   opacity: 1
 };
 
+var coffeeVisParams = {
+  palette: '2ff5ff', // Set the color
+  format: 'png',     // Set the output format
+  opacity: 0.7       // Set transparency
+};
+
+var suitableVisParams = {
+  palette: '49cc47', 
+  format: 'png',     
+  opacity: 0.7
+};
+
+// Create the basic mask to identify areas that have both vegetation cover and are not water bodies
+var ndvi = sentinel.normalizedDifference(['B8', 'B4']).rename('ndvi');
+var ndwi = sentinel.normalizedDifference(['B3', 'B8']).rename('ndwi');
+var basicMask = ndvi.gte(0.2).and(ndwi.lt(0.3));  // Maintain low NDWI values to exclude water bodies
+var basicImage = sentinel.updateMask(basicMask);
+
+
+// Create a suitable mask for precise classification of suitable coffee growing areas
+// Calculate NDMI
+var ndmi = sentinel.normalizedDifference(['B8', 'B11']).rename('ndmi'); 
+
+// Load SRTM digital elevation model data
+var dem = ee.Image('USGS/SRTMGL1_003');
+// Calculate slope
+var slope = ee.Terrain.slope(dem).rename('slope');
+var slopeMask = slope.gte(5).and(slope.lt(20));
+
+// Load MODIS land surface temperature dataset
+var dataset = ee.ImageCollection('MODIS/006/MOD11A2')
+                  .filterDate(start_o, end_o)
+                  .select('LST_Day_1km')
+                  .map(function(image) {
+                      return image.multiply(0.02).subtract(273.15); // Convert to Celsius
+                  });
+
+// Create a temperature mask for the range 15°C to 24°C
+var tempMask = dataset.map(function(image) {
+  return image.gte(15).and(image.lte(24));
+}).mean();
+
+
+// Calculate elevation
+var alosDem = ee.Image('JAXA/ALOS/AW3D30/V2_2');
+
+// Select the elevation band
+var elevation = alosDem.select('AVE_DSM');
+
+// Create an altitude mask that excludes areas below 700m and above 1900m
+var elevationMask = elevation.gte(700).and(elevation.lte(1900));
+
+// Create a combined mask based on NDVI, NDMI, slope, and temperature and elevation
+var suitableMask = basicMask.and(ndmi.gte(0.2)).and(slopeMask).and(tempMask).and(elevationMask);
+
+// Apply the mask to the Sentinel-2 image
+var suitableImage = sentinel.updateMask(suitableMask);
+Map.addLayer(suitableImage.clip(ermera), visParams, 'Suitable areas for coffee planting');
 
 
 
@@ -205,3 +263,124 @@ var view_changes = ui.Button({
 
 });
 //////////////////////// "View Area Changes" button config.////////////////////////
+
+
+
+/////////////////////// "District Statistics" button config.///////////////////////
+var district_stats = ui.Button({
+  style:{stretch: 'horizontal'},
+  label: 'Suitable Areas Statistics',
+  onClick: 
+  function ward_stats_panel() {
+    
+    Map.setOptions("Satellite")
+    
+    var subtitle2 = ui.Label({
+    value: '- Suitable Areas Statistics',
+    style: {
+    fontWeight: 'bold',
+    fontSize: '14px',
+    margin: '0 0 4px 0',
+    padding: '0'
+    }
+    });
+    Map.addLayer(basicImage.clip(ermera), visParams, 'Ermera areas');
+    Map.addLayer(suitableMask.selfMask().clip(ermera), suitableVisParams, 'Suitable areas for coffee planting');
+    
+    
+    function resetMap() {
+      // Clear the drawing tool and all map layers
+      Map.drawingTools().clear();
+      Map.layers().reset();
+  
+      // Clear the console and re-add buttons and labels
+      console.clear()
+      console.add(title)
+      console.add(subtitle2)
+      console.add(draw);
+      console.add(clear);
+      console.add(home_button)
+  
+      // Re-add the basic vegetation and moisture mask layers
+      Map.addLayer(basicImage.clip(ermera), visParams, 'Ermera areas');
+  
+      // Re-add layers that fit the planting area
+      Map.addLayer(suitableMask.selfMask().clip(ermera), suitableVisParams, 'Suitable areas for coffee planting');
+    }
+    
+    
+    
+    // Draw AOI
+    var draw = ui.Button({
+      label: 'Draw AOI',
+      style:{stretch: 'horizontal'},
+      onClick: function() {
+
+        Map.drawingTools().clear();
+        Map.drawingTools().setLinked(false);
+        Map.drawingTools().setShape('rectangle');
+        Map.drawingTools().draw();
+
+        Map.drawingTools().onDraw(function(event) {
+          calculateAndDisplayArea();  // Calculate area
+        });
+    
+      }
+    })
+    
+    // Calculate area
+    function calculateAndDisplayArea() {
+      var AOI = Map.drawingTools().layers().get(0).toGeometry();
+      var suitable2 = suitableImage.select('B2').gt(0).multiply(ee.Image.pixelArea()).divide(10000);
+      var result = suitable2.reduceRegion({
+        reducer: ee.Reducer.sum(),
+        geometry: AOI,
+        scale: 10, // Use an appropriate scale
+        maxPixels: 1e12 // Maximum number of pixels
+      });
+      var totalResult = ee.Number(result.get('B2')).round();
+      
+      // Create a label
+        var header = ui.Label({
+            value: "Available area for planting coffee (square hectares):",
+            style: {fontWeight: 'bold', margin: '10px 5px'}
+        }); 
+      console.add(header);  
+      var area_sumLabel = ui.Label({
+          value: 'Calculating...',
+          style:{padding:'0px 50px'}
+        })
+        
+      totalResult.evaluate(function(val){
+        area_sumLabel.setValue(val)
+        
+      });        
+    
+      var results=ui.Panel({
+            widgets: [area_sumLabel],
+            layout: ui.Panel.Layout.Flow('horizontal')
+          })
+          
+      console.add(results)
+      
+    }
+    
+    
+    var clear = ui.Button({
+    label: 'Clear',
+    style:{stretch: 'horizontal'},
+    onClick: function() {
+        resetMap();
+    }
+    });
+    
+    console.clear()
+    console.add(title)
+    console.add(subtitle2)
+    console.add(ui.Label('Draw the AOI to calculate the total area of land within that range that is suitable for planting coffee.', {whiteSpace: 'wrap'}))
+    console.add(draw)
+    console.add(clear)
+    console.add(home_button)
+  }
+});
+/////////////////////// "District Statistics" button config.///////////////////////
