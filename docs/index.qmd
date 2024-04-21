@@ -116,3 +116,52 @@ Then set the range of landform features suitable for coffee growth. Elevation: 7
 ```
 
 ![Visualization of elevation, slope and temperature (from left to right).](img/s+t+d.jpg){width="3845"}
+
+## Google Earth Engine Application
+
+Here are three different functions in the panel of out application.
+
+### Function 1 : View Area Changes
+
+This section aims to understand the coffee planting situation in Ermera over the past five years.
+
+After clicking the first button, the panel displays a timeline. Below, the line chart shows the total area of coffee already planted each year and the total area suitable for planting.
+
+```{r, eval=FALSE}
+var model_training = function(start, end){
+//... ...
+// Train a random forest model using training data
+  var model = ee.Classifier.smileRandomForest(500).train(training, 'class');
+  
+// Apply the model on the complete Sentinel image
+  var prediction = basicImage.classify(model);
+//... ...
+}
+```
+
+![Visual view of coffee, forest and urban area (from left to right).](img/vs.jpg){fig-align="center"}
+
+For instance, to examine the distribution of already planted coffee areas in 2019, clicking the '2019' time coordinate will slowly reveal blue spots on the map. This detection process involves passing the time from the slider to a random forest algorithm model, which trains on the MultiPolygon dataset marked for that time, and returns the detected layers of coffee-planted areas.
+
+```{r, eval=FALSE}
+    // Define time range list
+    var years = ee.List.sequence(2018, 2024);
+
+    var generateCoffeePrediction = function(start,end) {
+
+      // Using the Sentinel-2 image set
+      var sentinel = ee.ImageCollection('COPERNICUS/S2_SR')
+                        .filterDate(start, end)
+                        .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 1))
+                        .mean()
+                        .select(bands);
+    
+      // Place your appropriate masks and other relevant code here
+      var coffeePrediction = model_training(start,end);
+    
+      // Return coffeePrediction layer
+      return coffeePrediction.clip(ermera);
+    };
+```
+
+The chart provides area data for each year. Hovering over a specific time coordinate reveals that the total area of planted coffee fluctua
