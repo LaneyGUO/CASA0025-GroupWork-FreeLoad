@@ -288,3 +288,24 @@ This feature allows users to quickly display interested layers or remove them to
 ```
 
 ![visualisation](img/visualisation.png)
+
+# Interaction Design
+
+In the process of UI design, we considered five principles of UI design:
+
+1.  Usability: Our UI design provides an intuitive user interface, the right panel and the fixed legend in the lower left corner are easy to understand and operate.
+2.  Accessibility: We took into account the colour barrier of red-green colour blindness and avoided using both red and green colours together.
+3.  Aesthetics: the layout of the three functions is clear, and the visual hierarchy improves comfort. Consistency: Attention to detail ensures that the layer colours are consistent within each function.
+4.  Flexibility: The UI has a certain degree of flexibility and scalability to cope with different user needs and system changes.
+
+# Limitations
+
+1.  The study area is limited in scope and is specific in that only one area, Ermera, was selected.
+2.  Coffee recognition is relatively complex and recognition accuracy needs to be improved.
+3.  Because of the complexity of environmental and social factors, suitability for cultivation is not only influenced by the environment, but also by local laws and policies.
+
+# Future work
+
+-   Expand the identification area - expand the area of application of the project.
+-   Expand the identification of more coffee species - such as Robusta, which is also grown in Timor-Leste.
+-   Improve image resolution - consideration - could be given to incorporating high resolution images taken by drones to improve identification accuracy.
