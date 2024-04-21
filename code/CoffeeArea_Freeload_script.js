@@ -1,3 +1,28 @@
+//--------------------- Step 1: Importing and Pre-Processing  --------------------------------
+// Read Ermera boundary
+var ermera = ee.FeatureCollection('users/chaillleexy/Ermera');
+
+var start_o = '2022-01-01';
+var end_o = '2022-12-31';
+
+// Useable bands
+var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12'];
+
+var sentinel = ee.ImageCollection('COPERNICUS/S2_SR')
+                  .filterDate(start_o, end_o)
+                  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 1))
+                  .mean()
+                  .select(bands)
+                  
+var visParams = {
+  min: 0.0,
+  max: 3000,
+  bands: ['B4', 'B3', 'B2'],
+  opacity: 1
+};
+
+
+
 
 // palette with the colors
 var palette_vis= [
