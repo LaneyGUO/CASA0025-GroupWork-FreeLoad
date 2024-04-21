@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "CASA0025-Group Application",
     "section": "",
-    "text": "1 Intro",
+    "text": "1 Project Summary\nThis project aims to develop an application based on high-resolution and multi-temporal remote sensing technology to accurately identify and monitor suitable areas for Arabica coffee cultivation in the Ermera district of Timor-Leste. Through the use of vegetation indices such as NDVI, NDMI and satellite data, the specific effects of topographic and climatic factors such as slope, elevation and temperature fluctuations on coffee cultivation were studied in depth, and a Random Forest algorithm was used to categorise and identify cultivation areas. The project ultimately provides a monitoring and analysis platform for the agricultural sector in the Ermera region, supporting decision-making with scientific data and helping the sustainable development of the local coffee industry.",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>CASA0025-Group</span>"
     ]
@@ -13,8 +13,8 @@
     "objectID": "index.html#background",
     "href": "index.html#background",
     "title": "CASA0025-Group Application",
-    "section": "1.1 Background",
-    "text": "1.1 Background\n\n1.1.1 East Timor\n\n\n1.1.2 Ermera\nErmera is an administrative district located in the western part of the centre of the island of Timor, approximately 50 kilometres west of the capital city of Dili, in a mountainous terrain with a number of valleys and mountain ranges, one of the main highlands of Timor-Leste. These mountains provide a diverse microclimate that is ideal for agriculture, and the higher altitude provides ideal temperature and humidity conditions for slow coffee fruit ripening, which is very beneficial for enhancing the flavour of the coffee beans. Coffee farming is one of the main economic activities in the Ermera region, with the majority of the population relying directly or indirectly on coffee farming for their livelihoods, and its contribution to the local and national economy is significant, bringing valuable foreign exchange earnings and a large number of employment opportunities to the country, as well as enhancing Timor-Leste’s international reputation for coffee.",
+    "section": "2.1 Background",
+    "text": "2.1 Background\nTimor-Leste, located in Southeast Asia, comprises a peninsula and several small islands near Australia. The region of Ermera, nestled in the mountainous west-central area of Timor Island and about 50 kilometers from Dili, boasts diverse microclimates and high altitudes ideal for coffee berry ripening, enhancing the beans’ flavor. Coffee farming dominates Ermera’s economy, providing livelihoods for most residents, generating substantial foreign exchange, creating jobs, and boosting Timor-Leste’s global coffee reputation.\n\n\n\nStudy Area-Ermera",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>CASA0025-Group</span>"
     ]
@@ -23,88 +23,8 @@
     "objectID": "index.html#literature-review",
     "href": "index.html#literature-review",
     "title": "CASA0025-Group Application",
-    "section": "1.2 Literature review",
-    "text": "1.2 Literature review\nCoffee plantations benefit from geographical and climatic conditions that are compatible with their unique growing needs. Coffee cultivation is very sensitive to climate, especially variables such as temperature and precipitation (Bilen et al., 2023), and changes in these variables can significantly affect coffee quality and yield (Rahn et al., 2018). Ideal coffee-growing areas usually have specific elevation ranges and soil types to optimise coffee plant health and productivity (González-Orozco et al., 2024). Adaptations such as shade management are essential to mitigate the adverse effects of temperature on coffee (Rahn et al., 2018). Not only does this practice contribute to temperature regulation, but it also has a positive impact on the microclimate (Davis et al., 2012). For example, Arabica coffee prefers higher altitudes where temperatures are cooler, while Robusta coffee is grown at lower altitudes (González-Orozco et al., 2024).\nResearch predicts that there will be fewer areas suitable for growing coffee due to climate change, which is expected to have a significant impact on yields if adaptation measures are not taken (Camargo, 2010; Bunn et al., 2015). The development of drought and temperature tolerant coffee varieties is also seen as a key adaptation strategy to cope with the negative impacts of global warming and climate change (Camargo, 2010). Geographic and altitudinal changes in coffee-growing areas are necessary to cope with climate change, and suitable coffee-growing areas may increase at higher altitudes (Camargo, 2010). Advanced agricultural technologies such as precision agriculture facilitated by artificial intelligence and remote sensing can optimise inputs such as water and pesticides to improve yields and sustainability (Oliveira et al., 2021).",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>CASA0025-Group</span>"
-    ]
-  },
-  {
-    "objectID": "index.html#research-question",
-    "href": "index.html#research-question",
-    "title": "CASA0025-Group Application",
-    "section": "2.1 Research question",
-    "text": "2.1 Research question",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>CASA0025-Group</span>"
-    ]
-  },
-  {
-    "objectID": "index.html#user",
-    "href": "index.html#user",
-    "title": "CASA0025-Group Application",
-    "section": "2.2 User",
-    "text": "2.2 User",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>CASA0025-Group</span>"
-    ]
-  },
-  {
-    "objectID": "index.html#approach",
-    "href": "index.html#approach",
-    "title": "CASA0025-Group Application",
-    "section": "4.1 Approach",
-    "text": "4.1 Approach",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>CASA0025-Group</span>"
-    ]
-  },
-  {
-    "objectID": "index.html#data",
-    "href": "index.html#data",
-    "title": "CASA0025-Group Application",
-    "section": "4.2 Data",
-    "text": "4.2 Data",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>CASA0025-Group</span>"
-    ]
-  },
-  {
-    "objectID": "index.html#data-pre-processing",
-    "href": "index.html#data-pre-processing",
-    "title": "CASA0025-Group Application",
-    "section": "5.1 Data pre-processing",
-    "text": "5.1 Data pre-processing\n云量：1%\n波段选择\nA)    NDVI&gt;0.2 \n目的：有植被\n数据集：LANDSAT/LC08/C02/T1_L2: USGS Landsat 8 Collection 2 Tier 1 Raw Scenes \nB）NDWI&lt;0.3\n目的：排出河流类水体\n数据集：LANDSAT/LC08/C02/T1_L2: USGS Landsat 8 Collection 2 Tier 1 Raw Scenes",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>CASA0025-Group</span>"
-    ]
-  },
-  {
-    "objectID": "index.html#preliminary-area",
-    "href": "index.html#preliminary-area",
-    "title": "CASA0025-Group Application",
-    "section": "5.2 Preliminary area",
-    "text": "5.2 Preliminary area",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>CASA0025-Group</span>"
-    ]
-  },
-  {
-    "objectID": "index.html#classification",
-    "href": "index.html#classification",
-    "title": "CASA0025-Group Application",
-    "section": "5.3 Classification",
-    "text": "5.3 Classification",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>CASA0025-Group</span>"
-    ]
-  },
-  {
-    "objectID": "index.html#final-result",
-    "href": "index.html#final-result",
-    "title": "CASA0025-Group Application",
-    "section": "5.4 Final result",
-    "text": "5.4 Final result",
+    "section": "2.2 Literature review",
+    "text": "2.2 Literature review\nCoffee cultivation is extremely dependent on its specific geographic and climatic conditions, factors that directly affect coffee quality and yield (Bilen et al., 2023, Rahn et al., 2018). Adaptive management of shade, which is essential to mitigate temperature fluctuations due to climate change, not only helps to regulate temperature but also positively affects the local microclimate (Rahn et al., 2018). As climate change intensifies, suitable coffee-growing areas are expected to decrease, and failure to take adaptation measures will severely impact yields (Camargo, 2010; Bunn et al., 2015). Higher altitude areas may become new hotspots for coffee cultivation in the future (González-Orozco et al., 2024).\nIn addition, the application of artificial intelligence and remote sensing technologies can optimise agricultural resource management and improve coffee production and sustainability. Studies such as Oliphant et al. (2019) and Kelly et al. (2018) used random forest algorithms to accurately differentiate agricultural land and calculate area on a GEE platform, showing the potential of remote sensing and machine learning in precision agriculture.",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>CASA0025-Group</span>"
     ]
