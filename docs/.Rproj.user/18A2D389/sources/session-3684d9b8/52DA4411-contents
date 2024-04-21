@@ -1,0 +1,170 @@
+---
+title: "CASA0025-Group"
+---
+
+# Project Summary
+
+This project aims to develop an application based on high-resolution and multi-temporal remote sensing technology to accurately identify and monitor suitable areas for Arabica coffee cultivation in the Ermera district of Timor-Leste. Through the use of vegetation indices such as NDVI, NDMI and satellite data, the specific effects of topographic and climatic factors such as slope, elevation and temperature fluctuations on coffee cultivation were studied in depth, and a Random Forest algorithm was used to categorise and identify cultivation areas. The project ultimately provides a monitoring and analysis platform for the agricultural sector in the Ermera region, supporting decision-making with scientific data and helping the sustainable development of the local coffee industry.
+
+# Introduction
+
+## Background
+
+Timor-Leste, located in Southeast Asia, comprises a peninsula and several small islands near Australia. The region of Ermera, nestled in the mountainous west-central area of Timor Island and about 50 kilometers from Dili, boasts diverse microclimates and high altitudes ideal for coffee berry ripening, enhancing the beans' flavor. Coffee farming dominates Ermera's economy, providing livelihoods for most residents, generating substantial foreign exchange, creating jobs, and boosting Timor-Leste's global coffee reputation.
+
+![Study Area-Ermera](/img/ermera.png){fig-align="center"}
+
+## Literature review
+
+Coffee cultivation is extremely dependent on its specific geographic and climatic conditions, factors that directly affect coffee quality and yield (Bilen et al., 2023, Rahn et al., 2018). Adaptive management of shade, which is essential to mitigate temperature fluctuations due to climate change, not only helps to regulate temperature but also positively affects the local microclimate (Rahn et al., 2018). As climate change intensifies, suitable coffee-growing areas are expected to decrease, and failure to take adaptation measures will severely impact yields (Camargo, 2010; Bunn et al., 2015). Higher altitude areas may become new hotspots for coffee cultivation in the future (González-Orozco et al., 2024).
+
+In addition, the application of artificial intelligence and remote sensing technologies can optimise agricultural resource management and improve coffee production and sustainability. Studies such as Oliphant et al. (2019) and Kelly et al. (2018) used random forest algorithms to accurately differentiate agricultural land and calculate area on a GEE platform, showing the potential of remote sensing and machine learning in precision agriculture.
+
+# Problem Statement
+
+**What are the most suitable locations for coffee growing in the Ermera region?**
+
+Objective: To develop an application based on high-resolution and multi-temporal remote sensing techniques to accurately identify and monitor changes in suitable areas for Arabica coffee cultivation in the Ermera region and the specific impact of topographic and climatic factors on them.
+
+# End User
+
+Local agricultural departments
+
+This application provides dynamic monitoring and detailed analyses of suitable areas for coffee cultivation, helping to make decisions based on scientific data and to ensure that resources are allocated appropriately. In order to address the specific challenges faced by local agricultural departments, we liaise with the heads of these departments to ensure that the solutions are tailored to their needs. By integrating a wide range of data such as altitude, surface temperature and topography, the app is able to more accurately predict areas suitable for coffee cultivation. In addition, it provides the agricultural sector with a scientific basis for planting, helping to centralise resources, increase production capacity and promote the development of the local industry.
+
+# Methodology
+
+![Flow chart](img/CASA0025-Big%20data-%20Process.png){fig-align="center"}
+
+Additionally, by interviewing local coffee cultivation consultants, we collect essential information on coffee growing conditions like the impact of elevation, temperature, and slope. We also find out that local farmers favor planting Arabica coffee beans in dispersed patterns.
+
+![Interview.](img/chat.png){fig-align="center"}
+
+## Data
+
+-   NDVI： LANDSAT/LC08/C02/T1_L2: USGS Landsat 8 Collection 2 Tier 1 Raw Scenes
+
+-   NDWI： LANDSAT/LC08/C02/T1_L2: USGS Landsat 8 Collection 2 Tier 1 Raw Scenes
+
+-   NDMI： LANDSAT/LC08/C02/T1_L2: USGS Landsat 8 Collection 2 Tier 1 Raw Scene
+
+-   DEM： JAXA/ALOS/AW3D30/V2_2: ALOS DSM: Global 30m v3.2
+
+-   Temperature：MODIS/006/MOD11A2: MOD11A2.061 Terra Land Surface Temperature and Emissivity 8-Day Global 1km
+
+-   Slope：USGS/SRTMGL1_003： NASA SRTM Digital Elevation 30m
+
+## Data preprocessing
+
+First, we restrict the time range to January 2022 through January 2023. Then, we specify the use of bands B2 to B4, and ensure that the cloud coverage is limited to only 1%.
+
+```{r, eval=FALSE}
+//1. Data preprocessing
+var ermera = ee.FeatureCollection('users/yuqingvicky/ermera');
+
+// specified time range
+var start = '2022-01-01';
+var end = '2023-01-01';
+
+// Specify the band to use
+var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12'];
+
+// Cloud cover: 1%
+var sentinel = ee.ImageCollection('COPERNICUS/S2_SR')
+                  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 1))
+                  .mean()
+                  .select(bands)
+                  
+var visParams = {
+  min: 0.0,
+  max: 3000,
+  bands: ['B4', 'B3', 'B2'],
+  opacity: 1
+};
+```
+
+Next, we will create a mask to identify areas suitable for coffee cultivation.
+
+NDVI\>0.2, ensure there is vegetation.
+
+NDWI\<0.3, to exclude river-like water bodies.
+
+NDMI\>0.2, ensure there is vegetation and a certain amount of moisture.
+
+Dataset: LANDSAT/LC08/C02/T1_L2: USGS Landsat 8 Collection 2 Tier 1 Raw Scenes
+
+```{r, eval=FALSE}
+//2. Create a basic mask for classification
+// Create a basic vegetation and moisture mask (identifies areas that are both vegetated and non-water bodies. But vegetation here may include healthy and less healthy vegetation)
+var ndvi = sentinel.normalizedDifference(['B8', 'B4']).rename('ndvi');
+var ndwi = sentinel.normalizedDifference(['B3', 'B8']).rename('ndwi');
+var ndmi = var ndmi = sentinel.normalizedDifference(['B8', 'B11']).gte(0.2).rename('ndmi');
+var basicMask = ndvi.gte(0.2).and(ndwi.lt(0.3));  // Vegetated areas and non-water bodies, maintain low NDWI values to exclude water bodies
+
+```
+
+![Visualization of NDVI, NDWI and NDMI (from left to right).](img/ND-I.jpg){fig-align="center"}
+
+Then set the range of landform features suitable for coffee growth. Elevation: 700-1900 meters Temperature: 15-24 degrees Celsius Slope: 5-20 degrees
+
+```{r, eval=FALSE}
+// Create a combined mask based on NDVI, NDMI, slope, and temperature
+ var suitableMask = basicMask.and(ndmi)).and(slopeMask).and(tempMask).and(elevationMask);
+
+// Apply the mask to the Sentinel-2 image
+ var suitableImage = sentinel.updateMask(suitableMask);
+```
+
+![Visualization of elevation, slope and temperature (from left to right).](img/s+t+d.jpg){width="3845"}
+<<<<<<< Updated upstream
+
+## Google Earth Engine Application
+
+Here are three different functions in the panel of out application.
+
+### Function 1 : View Area Changes
+
+This section aims to understand the coffee planting situation in Ermera over the past five years.
+
+After clicking the first button, the panel displays a timeline. Below, the line chart shows the total area of coffee already planted each year and the total area suitable for planting.
+
+```{r, eval=FALSE}
+var model_training = function(start, end){
+//... ...
+// Train a random forest model using training data
+  var model = ee.Classifier.smileRandomForest(500).train(training, 'class');
+  
+// Apply the model on the complete Sentinel image
+  var prediction = basicImage.classify(model);
+//... ...
+}
+```
+
+![Visual view of coffee, forest and urban area (from left to right).](img/vs.jpg){fig-align="center"}
+
+For instance, to examine the distribution of already planted coffee areas in 2019, clicking the '2019' time coordinate will slowly reveal blue spots on the map. This detection process involves passing the time from the slider to a random forest algorithm model, which trains on the MultiPolygon dataset marked for that time, and returns the detected layers of coffee-planted areas.
+
+```{r, eval=FALSE}
+    // Define time range list
+    var years = ee.List.sequence(2018, 2024);
+
+    var generateCoffeePrediction = function(start,end) {
+
+      // Using the Sentinel-2 image set
+      var sentinel = ee.ImageCollection('COPERNICUS/S2_SR')
+                        .filterDate(start, end)
+                        .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 1))
+                        .mean()
+                        .select(bands);
+    
+      // Place your appropriate masks and other relevant code here
+      var coffeePrediction = model_training(start,end);
+    
+      // Return coffeePrediction layer
+      return coffeePrediction.clip(ermera);
+    };
+```
+
+The chart provides area data for each year. Hovering over a specific time coordinate reveals that the total area of planted coffee fluctua
+=======
+>>>>>>> Stashed changes

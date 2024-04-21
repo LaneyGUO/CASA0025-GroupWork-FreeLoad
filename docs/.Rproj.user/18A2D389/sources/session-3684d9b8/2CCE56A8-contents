@@ -1,0 +1,164 @@
+---
+title: "gee"
+---
+
+# Project Summary
+
+This project aims to develop an application based on high-resolution and multi-temporal remote sensing technology to accurately identify and monitor suitable areas for Arabica coffee cultivation in the Ermera district of Timor-Leste. Through the use of vegetation indices such as NDVI, NDMI and satellite data, the specific effects of topographic and climatic factors such as slope, elevation and temperature fluctuations on coffee cultivation were studied in depth, and a Random Forest algorithm was used to categorise and identify cultivation areas. The project ultimately provides a monitoring and analysis platform for the agricultural sector in the Ermera region, supporting decision-making with scientific data and helping the sustainable development of the local coffee industry.
+
+# Introduction
+
+## Background
+
+Timor-Leste, located in Southeast Asia, comprises a peninsula and several small islands near Australia. The region of Ermera, nestled in the mountainous west-central area of Timor Island and about 50 kilometers from Dili, boasts diverse microclimates and high altitudes ideal for coffee berry ripening, enhancing the beans' flavor. Coffee farming dominates Ermera's economy, providing livelihoods for most residents, generating substantial foreign exchange, creating jobs, and boosting Timor-Leste's global coffee reputation.
+
+![Study Area-Ermera](/img/ermera.png){fig-align="center"}
+
+## Literature review
+
+Coffee cultivation is extremely dependent on its specific geographic and climatic conditions, factors that directly affect coffee quality and yield (Bilen et al., 2023, Rahn et al., 2018). Adaptive management of shade, which is essential to mitigate temperature fluctuations due to climate change, not only helps to regulate temperature but also positively affects the local microclimate (Rahn et al., 2018). As climate change intensifies, suitable coffee-growing areas are expected to decrease, and failure to take adaptation measures will severely impact yields (Camargo, 2010; Bunn et al., 2015). Higher altitude areas may become new hotspots for coffee cultivation in the future (González-Orozco et al., 2024).
+
+In addition, the application of artificial intelligence and remote sensing technologies can optimise agricultural resource management and improve coffee production and sustainability. Studies such as Oliphant et al. (2019) and Kelly et al. (2018) used random forest algorithms to accurately differentiate agricultural land and calculate area on a GEE platform, showing the potential of remote sensing and machine learning in precision agriculture.
+
+# Problem Statement
+
+**What are the most suitable locations for coffee growing in the Ermera region?**
+
+Objective: To develop an application based on high-resolution and multi-temporal remote sensing techniques to accurately identify and monitor changes in suitable areas for Arabica coffee cultivation in the Ermera region and the specific impact of topographic and climatic factors on them.
+
+# End User
+
+Local agricultural departments
+
+This application provides dynamic monitoring and detailed analyses of suitable areas for coffee cultivation, helping to make decisions based on scientific data and to ensure that resources are allocated appropriately. In order to address the specific challenges faced by local agricultural departments, we liaise with the heads of these departments to ensure that the solutions are tailored to their needs. By integrating a wide range of data such as altitude, surface temperature and topography, the app is able to more accurately predict areas suitable for coffee cultivation. In addition, it provides the agricultural sector with a scientific basis for planting, helping to centralise resources, increase production capacity and promote the development of the local industry.
+
+ 
+
+------------------------------------------------------------------------
+
+# Google Earth Engine
+
+## Function 2: Visualization and Area Calculation of Suitable Coffee Planting Regions
+
+This feature is designed to display the geographical distribution of areas suitable for coffee planting in the Ermera in 2022. Users can visually identify which areas are most suitable for coffee cultivation, select specific regions on the map, and gain the calculation result of areas within.
+
+### Enable users to self-select areas of interest
+
+This feature allows the user to draw polygons they are interested in on the layer.
+
+``` javascript
+    //Here you need to add the function function - check the wk8 ward statistics to see how to follow the regional statistics
+    var draw = ui.Button({
+      label: 'Draw AOI',
+      style:{stretch: 'horizontal'},
+      onClick: function() {
+        
+        //console.clear();
+        //console.add(header);
+    
+        // Clearing and setting up drawing tools
+        Map.drawingTools().clear();
+        Map.drawingTools().setLinked(false);
+        Map.drawingTools().setShape('rectangle');
+        Map.drawingTools().draw();
+    
+        // Handling events after drawing is complete
+        // Configuring drawing tools in button click events
+        Map.drawingTools().onDraw(function(event) {
+          calculateAndDisplayArea();  // Calculate and display area
+        });
+    
+      }
+    })
+    
+```
+
+![Box the area of interest](/img/Box.png)
+
+### **Customised land area calculation with real-time feedback function**
+
+Based on the previously drawn polygon, the system will automatically calculate the area of land suitable for planting in the region and show the result on the interactive interface.
+
+``` javascript
+  function calculateAndDisplayArea() {
+      var AOI = Map.drawingTools().layers().get(0).toGeometry();
+      var suitable2 = suitableImage.select('B2').gt(0).multiply(ee.Image.pixelArea()).divide(10000);
+      var result = suitable2.reduceRegion({
+        reducer: ee.Reducer.sum(),
+        geometry: AOI,
+        scale: 10, // Use of appropriate scales
+        maxPixels: 1e12 // Maximum number of pixels
+      });
+      var totalResult = ee.Number(result.get('B2')).round();
+      
+      // Create Title
+        var header = ui.Label({
+            value: "Available area for planting coffee (hectare):",
+            style: {fontWeight: 'bold', margin: '10px 5px'}
+        }); 
+      console.add(header);  
+      var area_sumLabel = ui.Label({
+          value: 'Calculating...',
+          style:{padding:'0px 50px'}
+        })
+        
+      totalResult.evaluate(function(val){
+        area_sumLabel.setValue(val)
+        
+      });        
+    
+      var results=ui.Panel({
+            widgets: [area_sumLabel],
+            layout: ui.Panel.Layout.Flow('horizontal')
+          })
+          
+      console.add(results)
+      
+    }
+```
+
+![Calculation of land area](/img/calculate.png)
+
+### Reset box-select operations and results
+
+Allows the user to reset previously drawn polygons and calculation results.
+
+``` javascript
+    var clear = ui.Button({
+    label: 'Clear',
+    style:{stretch: 'horizontal'},
+    onClick: function() {
+        resetMap();
+    }
+    });
+```
+
+## Function 3: Layers Visualisation
+
+This feature allows users to quickly display interested layers or remove them to explore the distribution of different land uses distribution classified by the Random Forest model.
+
+``` javascript
+    var checkbox_basic = ui.Checkbox({
+      label: 'Ermera areas',
+      onChange: function(checked) {
+        // If the tick box is ticked
+        if (checked) {
+          // Add a single band layer to the map
+          Map.addLayer(basicImage.clip(ermera), visParams, 'Ermera areas');
+        } else {
+          // If unchecked, remove layer from map
+          var layers = Map.layers();
+          for (var i = 0; i < layers.length(); i++) {
+            var layer = layers.get(i);
+            if (layer.getName() === 'Ermera areas') {
+              Map.remove(layer);
+            }
+          }
+        }
+      }
+    }); 
+```
+
+![](/img/visualisation.png)
+
+# 
