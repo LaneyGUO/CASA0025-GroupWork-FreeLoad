@@ -165,3 +165,126 @@ For instance, to examine the distribution of already planted coffee areas in 201
 ```
 
 The chart provides area data for each year. Hovering over a specific time coordinate reveals that the total area of planted coffee fluctua
+
+## Function 2: Visualization and Area Calculation of Suitable Coffee Planting Regions
+
+This feature is designed to display the geographical distribution of areas suitable for coffee planting in the Ermera in 2022. Users can visually identify which areas are most suitable for coffee cultivation, select specific regions on the map, and gain the calculation result of areas within.
+
+### Enable users to self-select areas of interest
+
+This feature allows the user to draw rectangles they are interested in on the layer.
+
+``` javascript
+    //Here you need to add the function function - check the wk8 ward statistics to see how to follow the regional statistics
+    var draw = ui.Button({
+      label: 'Draw AOI',
+      style:{stretch: 'horizontal'},
+      onClick: function() {
+        
+        //console.clear();
+        //console.add(header);
+    
+        // Clearing and setting up drawing tools
+        Map.drawingTools().clear();
+        Map.drawingTools().setLinked(false);
+        Map.drawingTools().setShape('rectangle');
+        Map.drawingTools().draw();
+    
+        // Handling events after drawing is complete
+        // Configuring drawing tools in button click events
+        Map.drawingTools().onDraw(function(event) {
+          calculateAndDisplayArea();  // Calculate and display area
+        });
+    
+      }
+    })
+    
+```
+
+![Box the area of interest](img/Box.png){fig-align="center"}
+
+### **Customised land area calculation with real-time feedback function**
+
+Based on the previously drawn rectangles, the system will automatically calculate the area of land suitable for planting in the region and show the result on the interactive interface.
+
+``` javascript
+  function calculateAndDisplayArea() {
+      var AOI = Map.drawingTools().layers().get(0).toGeometry();
+      var suitable2 = suitableImage.select('B2').gt(0).multiply(ee.Image.pixelArea()).divide(10000);
+      var result = suitable2.reduceRegion({
+        reducer: ee.Reducer.sum(),
+        geometry: AOI,
+        scale: 10, // Use of appropriate scales
+        maxPixels: 1e12 // Maximum number of pixels
+      });
+      var totalResult = ee.Number(result.get('B2')).round();
+      
+      // Create Title
+        var header = ui.Label({
+            value: "Available area for planting coffee (hectare):",
+            style: {fontWeight: 'bold', margin: '10px 5px'}
+        }); 
+      console.add(header);  
+      var area_sumLabel = ui.Label({
+          value: 'Calculating...',
+          style:{padding:'0px 50px'}
+        })
+        
+      totalResult.evaluate(function(val){
+        area_sumLabel.setValue(val)
+        
+      });        
+    
+      var results=ui.Panel({
+            widgets: [area_sumLabel],
+            layout: ui.Panel.Layout.Flow('horizontal')
+          })
+          
+      console.add(results)
+      
+    }
+```
+
+![Calculation of land area](img/calculate.png){fig-align="center"}
+
+### Reset box-select operations and results
+
+Allows the user to reset previously drawn rectangles and calculation results.
+
+``` javascript
+    var clear = ui.Button({
+    label: 'Clear',
+    style:{stretch: 'horizontal'},
+    onClick: function() {
+        resetMap();
+    }
+    });
+```
+
+## Function 3: Layers Visualisation
+
+This feature allows users to quickly display interested layers or remove them to explore the distribution of different land uses distribution classified by the Random Forest model.
+
+``` javascript
+    var checkbox_basic = ui.Checkbox({
+      label: 'Ermera areas',
+      onChange: function(checked) {
+        // If the tick box is ticked
+        if (checked) {
+          // Add a single band layer to the map
+          Map.addLayer(basicImage.clip(ermera), visParams, 'Ermera areas');
+        } else {
+          // If unchecked, remove layer from map
+          var layers = Map.layers();
+          for (var i = 0; i < layers.length(); i++) {
+            var layer = layers.get(i);
+            if (layer.getName() === 'Ermera areas') {
+              Map.remove(layer);
+            }
+          }
+        }
+      }
+    }); 
+```
+
+![visualisation](img/visualisation.png)
