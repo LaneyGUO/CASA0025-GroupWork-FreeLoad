@@ -383,3 +383,180 @@ var district_stats = ui.Button({
   }
 });
 /////////////////////// "District Statistics" button config.///////////////////////
+
+////////////////////////// "How it works" button config.//////////////////////
+var how_works = ui.Button({
+  style:{stretch: 'horizontal'},
+  label: 'View Classification Distribution',
+  onClick: 
+  function ward_stats_panel() {
+    
+    Map.setOptions("Satellite")
+    var subtitle3 = ui.Label({
+      value: '- View Classification Distribution',
+      style: {
+      fontWeight: 'bold',
+      fontSize: '14px',
+      margin: '0 0 4px 0',
+      padding: '0'
+      }
+    });
+    
+    var layer_intro_basic = ui.Label('This layer combines the Normalized Difference Vegetation Index and Normalized Difference Water Index to filter Sentinel-2 data to identify areas that had both vegetation cover and were not water bodies.', {whiteSpace: 'wrap'})
+    
+    // define checkbox
+    var checkbox_basic = ui.Checkbox({
+      label: 'Ermera areas',
+      style: {
+      fontWeight: 'bold',
+      fontSize: '14px'
+      },
+      onChange: function(checked) {
+        if (checked) {
+          Map.addLayer(basicImage.clip(ermera), visParams, 'Ermera areas');
+        } else {
+          var layers = Map.layers();
+          for (var i = 0; i < layers.length(); i++) {
+            var layer = layers.get(i);
+            if (layer.getName() === 'Ermera areas') {
+              Map.remove(layer);
+            }
+          }
+        }
+      }
+    }); 
+    
+    var layer_intro_suitable = ui.Label('This layer combines elevation, temperature, slope and Normalized Difference Moisture Index to further filter the "Ermera areas" layer and retain a healthy vegetated area.', {whiteSpace: 'wrap'})
+    // Create a Area layer in Suitabour, click on the box
+    // Select a single band that represents the appropriate area
+    var singleBandSuitableImage = suitableImage.select('B2'); 
+
+    // Define a checkbox
+    var checkbox_suit = ui.Checkbox({
+      label: 'Suitable coffee planting areas',
+      style: {
+      fontWeight: 'bold',
+      fontSize: '14px'
+      },
+      onChange: function(checked) {
+        // If the tick box is ticked
+        if (checked) {
+          // Add a single-band layer to the map
+          Map.addLayer(singleBandSuitableImage.clip(ermera), suitableVisParams, 'Suitable coffee planting areas');
+        } else {
+          // If unchecked, remove the layer from the map
+          var layers = Map.layers();
+          for (var i = 0; i < layers.length(); i++) {
+            var layer = layers.get(i);
+            if (layer.getName() === 'Suitable coffee planting areas') {
+              Map.remove(layer);
+            }
+          }
+        }
+      }
+    });
+    
+    var layer_intro_coffee = ui.Label('This layer shows the distribution of existing coffee planting areas in Ermera identified by the random forest classifier.', {whiteSpace: 'wrap'})
+    // Create Krasifeld Cofia Area layer click box
+    // Define a checkbox
+    var checkbox_coffee = ui.Checkbox({
+      label: 'Classified existing coffee planting areas',
+      style: {
+      fontWeight: 'bold',
+      fontSize: '14px'
+      },
+      onChange: function(checked) {
+        // If the tick box is ticked
+        if (checked) {
+          // Add a single-band layer to the map
+          Map.addLayer(coffeePrediction.clip(ermera), coffeeVisParams, 'Classified existing coffee planting areas');
+        } else {
+          // If unchecked, remove the layer from the map
+          var layers = Map.layers();
+          for (var i = 0; i < layers.length(); i++) {
+            var layer = layers.get(i);
+            if (layer.getName() === 'Classified existing coffee planting areas') {
+              Map.remove(layer);
+            }
+          }
+        }
+      }
+    });
+    
+    
+    var layer_intro_forest = ui.Label('This layer shows the distribution of forest in Ermera identified by the random forest classifier.', {whiteSpace: 'wrap'})
+    // Define a checkbox
+    var checkbox_forest = ui.Checkbox({
+      label: 'Classified forest areas',
+      style: {
+      fontWeight: 'bold',
+      fontSize: '14px'
+      },
+      onChange: function(checked) {
+        // If the tick box is ticked
+        if (checked) {
+          // Add a single-band layer to the map
+          Map.addLayer(forestPrediction.clip(ermera), {palette:'pink'}, 'Classified forest areas');
+        } else {
+          // If unchecked, remove the layer from the map
+          var layers = Map.layers();
+          for (var i = 0; i < layers.length(); i++) {
+            var layer = layers.get(i);
+            if (layer.getName() === 'Classified forest areas') {
+              Map.remove(layer);
+            }
+          }
+        }
+      }
+    });
+
+  var layer_intro_urban = ui.Label('This layer shows the distribution of urban in Ermera identified by the random forest classifier.', {whiteSpace: 'wrap'})
+    // Define a checkbox
+    var checkbox_urban = ui.Checkbox({
+      label: 'Classified urban areas',
+      style: {
+      fontWeight: 'bold',
+      fontSize: '14px'
+      },
+      onChange: function(checked) {
+        // If the tick box is ticked
+        if (checked) {
+          // Add a single-band layer to the map
+          Map.addLayer(urbanPrediction.clip(ermera), {palette:'purple'}, 'Classified urban areas');
+        } else {
+          // If unchecked, remove the layer from the map
+          var layers = Map.layers();
+          for (var i = 0; i < layers.length(); i++) {
+            var layer = layers.get(i);
+            if (layer.getName() === 'Classified urban areas') {
+              Map.remove(layer);
+            }
+          }
+        }
+      }
+    });
+    
+  
+    console.clear()
+    console.add(title)
+    console.add(subtitle3)
+    console.add(ui.Label('The following checkable layers show the distribution of the different land uses of Ermera in 2022.', {whiteSpace: 'wrap'}))
+    
+    console.add(checkbox_basic)
+    console.add(layer_intro_basic)
+    
+    console.add(checkbox_suit)
+    console.add(layer_intro_suitable)
+    
+    console.add(checkbox_coffee)
+    console.add(layer_intro_coffee)
+    
+    console.add(checkbox_forest)
+    console.add(layer_intro_forest)
+    
+    console.add(checkbox_urban)
+    console.add(layer_intro_urban)
+
+    console.add(home_button)
+  }
+});
