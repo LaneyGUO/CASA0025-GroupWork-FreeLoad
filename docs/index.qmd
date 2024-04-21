@@ -31,3 +31,88 @@ Objective: To develop an application based on high-resolution and multi-temporal
 Local agricultural departments
 
 This application provides dynamic monitoring and detailed analyses of suitable areas for coffee cultivation, helping to make decisions based on scientific data and to ensure that resources are allocated appropriately. In order to address the specific challenges faced by local agricultural departments, we liaise with the heads of these departments to ensure that the solutions are tailored to their needs. By integrating a wide range of data such as altitude, surface temperature and topography, the app is able to more accurately predict areas suitable for coffee cultivation. In addition, it provides the agricultural sector with a scientific basis for planting, helping to centralise resources, increase production capacity and promote the development of the local industry.
+
+# Methodology
+
+![Flow chart](img/CASA0025-Big%20data-%20Process.png){fig-align="center"}
+
+Additionally, by interviewing local coffee cultivation consultants, we collect essential information on coffee growing conditions like the impact of elevation, temperature, and slope. We also find out that local farmers favor planting Arabica coffee beans in dispersed patterns.
+
+![Interview.](img/chat.png){fig-align="center"}
+
+## Data
+
+-   NDVI： LANDSAT/LC08/C02/T1_L2: USGS Landsat 8 Collection 2 Tier 1 Raw Scenes
+
+-   NDWI： LANDSAT/LC08/C02/T1_L2: USGS Landsat 8 Collection 2 Tier 1 Raw Scenes
+
+-   NDMI： LANDSAT/LC08/C02/T1_L2: USGS Landsat 8 Collection 2 Tier 1 Raw Scene
+
+-   DEM： JAXA/ALOS/AW3D30/V2_2: ALOS DSM: Global 30m v3.2
+
+-   Temperature：MODIS/006/MOD11A2: MOD11A2.061 Terra Land Surface Temperature and Emissivity 8-Day Global 1km
+
+-   Slope：USGS/SRTMGL1_003： NASA SRTM Digital Elevation 30m
+
+## Data preprocessing
+
+First, we restrict the time range to January 2022 through January 2023. Then, we specify the use of bands B2 to B4, and ensure that the cloud coverage is limited to only 1%.
+
+```{r, eval=FALSE}
+//1. Data preprocessing
+var ermera = ee.FeatureCollection('users/yuqingvicky/ermera');
+
+// specified time range
+var start = '2022-01-01';
+var end = '2023-01-01';
+
+// Specify the band to use
+var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12'];
+
+// Cloud cover: 1%
+var sentinel = ee.ImageCollection('COPERNICUS/S2_SR')
+                  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 1))
+                  .mean()
+                  .select(bands)
+                  
+var visParams = {
+  min: 0.0,
+  max: 3000,
+  bands: ['B4', 'B3', 'B2'],
+  opacity: 1
+};
+```
+
+Next, we will create a mask to identify areas suitable for coffee cultivation.
+
+NDVI\>0.2, ensure there is vegetation.
+
+NDWI\<0.3, to exclude river-like water bodies.
+
+NDMI\>0.2, ensure there is vegetation and a certain amount of moisture.
+
+Dataset: LANDSAT/LC08/C02/T1_L2: USGS Landsat 8 Collection 2 Tier 1 Raw Scenes
+
+```{r, eval=FALSE}
+//2. Create a basic mask for classification
+// Create a basic vegetation and moisture mask (identifies areas that are both vegetated and non-water bodies. But vegetation here may include healthy and less healthy vegetation)
+var ndvi = sentinel.normalizedDifference(['B8', 'B4']).rename('ndvi');
+var ndwi = sentinel.normalizedDifference(['B3', 'B8']).rename('ndwi');
+var ndmi = var ndmi = sentinel.normalizedDifference(['B8', 'B11']).gte(0.2).rename('ndmi');
+var basicMask = ndvi.gte(0.2).and(ndwi.lt(0.3));  // Vegetated areas and non-water bodies, maintain low NDWI values to exclude water bodies
+
+```
+
+![Visualization of NDVI, NDWI and NDMI (from left to right).](img/ND-I.jpg){fig-align="center"}
+
+Then set the range of landform features suitable for coffee growth. Elevation: 700-1900 meters Temperature: 15-24 degrees Celsius Slope: 5-20 degrees
+
+```{r, eval=FALSE}
+// Create a combined mask based on NDVI, NDMI, slope, and temperature
+ var suitableMask = basicMask.and(ndmi)).and(slopeMask).and(tempMask).and(elevationMask);
+
+// Apply the mask to the Sentinel-2 image
+ var suitableImage = sentinel.updateMask(suitableMask);
+```
+
+![Visualization of elevation, slope and temperature (from left to right).](img/s+t+d.jpg){width="3845"}
