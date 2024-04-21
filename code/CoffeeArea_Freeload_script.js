@@ -81,7 +81,6 @@ var suitableImage = sentinel.updateMask(suitableMask);
 Map.addLayer(suitableImage.clip(ermera), visParams, 'Suitable areas for coffee planting');
 
 
-
 // palette with the colors
 var palette_vis= [
   '49cc47', 
