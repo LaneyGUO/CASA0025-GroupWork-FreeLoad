@@ -7,3 +7,6 @@ How to run：
 - upload Eremra.zip to Assets
 - change the route in code "var ermera = ee.FeatureCollection('users/chaillleexy/Ermera');" to your own route
 - run!
+
+Quarto link:
+https://laneyguo.github.io/CASA0025-GroupWork-FreeLoad/
