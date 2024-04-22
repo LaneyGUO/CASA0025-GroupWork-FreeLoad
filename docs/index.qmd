@@ -1,5 +1,5 @@
 ---
-title: "CASA0025-Exploring the coffee growing areas in Ermera"
+title: "CASA0025"
 ---
 
 # Project Summary
@@ -33,7 +33,7 @@ Local agricultural departments
 This application provides dynamic monitoring and detailed analyses of suitable areas for coffee cultivation, helping to make decisions based on scientific data and to ensure that resources are allocated appropriately. In order to address the specific challenges faced by local agricultural departments, we liaise with the heads of these departments to ensure that the solutions are tailored to their needs. By integrating a wide range of data such as altitude, surface temperature and topography, the app is able to more accurately predict areas suitable for coffee cultivation. In addition, it provides the agricultural sector with a scientific basis for planting, helping to centralise resources, increase production capacity and promote the development of the local industry.
 
 
-<iframe src="https://ee-chaillleexy.projects.earthengine.app/view/freeload" width="120%" height="800px">
+<iframe src="https://ee-chaillleexy.projects.earthengine.app/view/freeload" width="120%" height="900px">
 
 </iframe>
 
@@ -313,3 +313,18 @@ In the process of UI design, we considered five principles of UI design:
 -   Expand the identification area - expand the area of application of the project.
 -   Expand the identification of more coffee species - such as Robusta, which is also grown in Timor-Leste.
 -   Improve image resolution - consideration - could be given to incorporating high resolution images taken by drones to improve identification accuracy.
+
+# References
+Camargo, M. B. P. de. (2010). ‘The impact of climatic variability and climate change on arabic coffee crop in Brazil’. Bragantia. Instituto Agronômico de Campinas, 69, pp. 239–247. doi: 10.1590/S0006-87052010000100030. 
+
+Davis, A. P., Gole, T. W., Baena, S. and Moat, J. (2012). ‘The Impact of Climate Change on Indigenous Arabica Coffee (Coffea arabica): Predicting Future Trends and Identifying Priorities’. PLOS ONE. Public Library of Science, 7 (11), p. e47981. doi: 10.1371/journal.pone.0047981. 
+
+González-Orozco, C. E., Porcel, M., Byrareddy, V. M., Rahn, E., Cardona, W. A., Velandia, D. A. S., Araujo-Carrillo, G. A. and Kath, J. (2024). ‘Preparing Colombian coffee production for climate change: Integrated spatial modelling to identify potential robusta coffee (Coffea canephora P.) growing areas’. Climatic Change, 177 (4), p. 67. doi: 10.1007/s10584-024-03717-2. 
+
+Kelley, L. C., Pitcher, L. and Bacon, C. (2018). ‘Using Google Earth Engine to Map Complex Shade-Grown Coffee Landscapes in Northern Nicaragua’. Remote Sensing. Multidisciplinary Digital Publishing Institute, 10 (6), p. 952. doi: 10.3390/rs10060952. 
+
+Oliphant, A. J., Thenkabail, P. S., Teluguntla, P., Xiong, J., Gumma, M. K., Congalton, R. G. and Yadav, K. (2019). ‘Mapping cropland extent of Southeast and Northeast Asia using multi-year time-series Landsat 30-m data using a random forest classifier on the Google Earth Engine Cloud’. International Journal of Applied Earth Observation and Geoinformation, 81, pp. 110–124. doi: 10.1016/j.jag.2018.11.014.  
+
+Oliveira, M. F. de, Santos, A. F. dos, Kazama, E. H., Rolim, G. de S. and Silva, R. P. da. (2021). ‘Determination of application volume for coffee plantations using artificial neural networks and remote sensing’. Computers and Electronics in Agriculture, 184, p. 106096. doi: 10.1016/j.compag.2021.106096. 
+
+Rahn, E., Vaast, P., Läderach, P., van Asten, P., Jassogne, L. and Ghazoul, J. (2018). ‘Exploring adaptation strategies of coffee production to climate change using a process-based model’. Ecological Modelling, 371, pp. 76–89. doi: 10.1016/j.ecolmodel.2018.01.009. 

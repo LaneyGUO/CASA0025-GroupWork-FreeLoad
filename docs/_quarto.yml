@@ -3,7 +3,7 @@ project:
   output-dir: "."
   
 book:
-  title: "<span style='color: black;'>CASA0025-Group Application</span>" 
+  title: "<span style='color: black;'>Exploring the coffee growing areas in Ermera</span>" 
   author: "Freeload group"
   favicon: "img/ucl.png"
   navbar:
