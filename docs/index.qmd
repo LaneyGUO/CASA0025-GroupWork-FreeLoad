@@ -32,6 +32,12 @@ Local agricultural departments
 
 This application provides dynamic monitoring and detailed analyses of suitable areas for coffee cultivation, helping to make decisions based on scientific data and to ensure that resources are allocated appropriately. In order to address the specific challenges faced by local agricultural departments, we liaise with the heads of these departments to ensure that the solutions are tailored to their needs. By integrating a wide range of data such as altitude, surface temperature and topography, the app is able to more accurately predict areas suitable for coffee cultivation. In addition, it provides the agricultural sector with a scientific basis for planting, helping to centralise resources, increase production capacity and promote the development of the local industry.
 
+
+<iframe src="https://ee-chaillleexy.projects.earthengine.app/view/freeload" width="120%" height="700px">
+
+</iframe>
+
+
 # Methodology
 
 ![Flow chart](img/CASA0025-Big%20data-%20Process.png){fig-align="center"}
